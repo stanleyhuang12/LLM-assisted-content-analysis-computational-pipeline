@@ -3,3 +3,37 @@ Ways to improve the LLM qualitative coding pipeline;
 1. We can randomize and shuffle the prompt examples when we are constructing the prompts. 
 2. We can use tree-of-thought prompting and converge to a better reasoning. 
 3. Create a prompt generator 
+4. We can randomize and shuffle the other deductive codes
+
+
+
+function: generate_json_ouput((codes))
+* Takes in a tuple of the count of digital wellbeing design changes and a short description following each
+* Outputs a json_schema format 
+    {{
+    "actions": [
+        {{"id": "A1",
+          "summary": short_descriptions_i}}
+        {{"id": "A2,
+          "summary": short_descriptions_i}}
+    ],
+    "count": 2
+    }}
+
+function construct_prompt(coding_instruction, few_shot, few_shot_texts, few_shot_codes, continuation_text, deductive_codes)
+
+I look for a sample of codes where Emily and I both coded that there were more than or equal to 2 platform
+wellbeing design changes. I randomly sample 4 of these articles which already had human-coded data, so I inputted
+these data into the generate_json_ouput function. 
+
+The idea is to develop a construct_prompt function that takes in a bool value for few_shot. If true, then we do few-shot prompting,
+else we do zero-shot prompting. For now because I do not have the ground example, I will use few_shot_codes
+
+I created a dataframe called `sample_pdwp_df` where I created a column that generates the specific prompt for each dataframe
+
+I now create initialize the LLM model called ChatOpenAI from langchain
+
+
+Task: 
+* How do we get the initial bank of PDWP and their data? Should we have an initial few set? So, we can get more 
+

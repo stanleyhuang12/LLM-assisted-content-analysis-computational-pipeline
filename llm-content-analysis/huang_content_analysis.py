@@ -121,7 +121,7 @@ def construct_prompt(coding_instructions: str,
     few_shot_texts, few_shot_codes = zip(*examples)
     
     ### Find the first four examples 
-    for i in range(0, 4):
+    for i in range(4):
         prompts += "\n###\n\n Examples:" + few_shot_texts[i] + "\nAnswer:\n" + few_shot_codes[i]
     
     prompts += "\n\n" + continuation_text + "\nAnswer:\n"
