@@ -115,6 +115,7 @@ def parse_json_string(response: str):
     """Decodes LLM output (str) into JSON object"""
     try: 
         res = response.strip('```').strip('json')
+        print(res)
         return json.loads(res)
     
     except json.JSONDecodeError:
@@ -147,6 +148,11 @@ def compute_cohen_kappa(evaluation_df, machine_coder, y1, y2):
         y1 (str): name of human coder 1 column
         y2 (str): name of human coder 2 column 
     """
+    evaluation_df = evaluation_df.copy()
+    evaluation_df[machine_coder] = evaluation_df[machine_coder].astype(int)
+    evaluation_df[y1] = evaluation_df[y1].astype(int)
+    evaluation_df[y2] = evaluation_df[y2].astype(int)
+
     y1_k = cohen_kappa_score(evaluation_df[machine_coder], evaluation_df[y1])
     y2_k = cohen_kappa_score(evaluation_df[machine_coder], evaluation_df[y2])
     between_humans_k = cohen_kappa_score(evaluation_df[y1], evaluation_df[y2])
@@ -219,7 +225,6 @@ def compute_perplexity(input: List[List[Tuple[str, int]]]):
     id = perplexity_scores.index(min(perplexity_scores))
     
     return id, perplexity_scores
- 
 
 
 def self_consistency_gen(prompt: str, model: any, num_iterations: int) -> Tuple[List, List]: 
@@ -275,13 +280,20 @@ def assess_self_consistency_perplexity(message_list):
   token_log_pairs, res, token_use = zip(*zipped_outputs)
   
   total_token_use = sum(token_use)
-
+  print(total_token_use)
+  
   count_list = [parse_val_from_json_string(rs, "count") for rs in res]
+  print(type(res[0]))
+  print(count_list)
+  
   cache_reason = list(zip(token_log_pairs, count_list, res))
-
+  
+  print(len(cache_reason))
   
   count_dict = Counter(count_list)
+  
   most_common_n = count_dict.most_common(1)[0][0]
+  
   
   relevant_t_l_pairs = [log_pairs for log_pairs, count, _ in cache_reason if count == most_common_n]
   margin_paths = [res for _, count, res in cache_reason if count != most_common_n]
@@ -429,36 +441,34 @@ def recover_langchain_obj(serialized_objects):
     langchain_class.append(load(obj))
   return langchain_class
 
-def export_files_safely(data, langchain_output_col, filename, trial=True): 
+def manage_files_safely(data: Optional, langchain_output_col: Optional, filename: str, export:bool=True): 
   # Warning: AIMessage langchain objects are not recoverable when an entire dataframe is exported 
   # into Excel file 
-  df = data.copy()
+  if export is True:
+    df = data.copy()
   
-  # Make Langchain class serializable 
-  df[langchain_output_col] = df[langchain_output_col].apply(custom_serialization) 
+    # Make Langchain class serializable 
+    df[langchain_output_col] = df[langchain_output_col].apply(custom_serialization) 
   
-  # Convert dataframe to a dictionary to save as JSON file 
-  df_dict = df.to_dict(orient='records')
+    # Convert dataframe to a dictionary to save as JSON file 
+    df_dict = df.to_dict(orient='records')
 
-  # Export as JSON file 
-   
-  with open(filename, "w") as file: 
-    json.dump(df_dict, file)
-    print("Done exporting as JSON file...")
-    
-  if trial is True: 
+    # Export as JSON file   
+    with open(filename, "w") as file: 
+        json.dump(df_dict, file)
+        print("Done exporting as JSON file...")
     # Test to see if the JSON file is a success
-    with open(filename, "r") as file: 
+    
+  with open(filename, "r") as file: 
         ret_dict = json.load(file)
         print("Done re-importing JSON file...")
-    
-    return f"File saved."
         
     # Recover the Langchain object 
   ret_df = pd.DataFrame(ret_dict)
   ret_df[langchain_output_col] = ret_df[langchain_output_col].apply(recover_langchain_obj)
-  
+
   print(ret_df[langchain_output_col])
+
   return ret_df 
   
 
