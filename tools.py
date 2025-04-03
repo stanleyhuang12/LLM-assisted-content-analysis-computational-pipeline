@@ -6,7 +6,6 @@ from langchain_core.messages.ai import AIMessage
 from langchain_core.load.dump import dumpd
 from langchain_core.load import * 
 from langchain_core.prompts import ChatPromptTemplate
-import os 
 from dotenv import find_dotenv, load_dotenv
 import random 
 import json 
@@ -16,8 +15,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 from transformers import BertModel, BertTokenizer
 import torch
 import numpy as np
-import requests
-from concurrent.futures import ThreadPoolExecutor
+
 
 
 model_name = 'bert-base-uncased'
@@ -430,18 +428,22 @@ def run_llm_model(model,
 
 def custom_serialization(ai_messages):
   serialized = []
+  
   for message in ai_messages: 
     serialized.append(dumpd(message))
+    
   return serialized
   
 
 def recover_langchain_obj(serialized_objects):
   langchain_class = []
+  
   for obj in serialized_objects: 
     langchain_class.append(load(obj))
+    
   return langchain_class
 
-def manage_files_safely(data: Optional, langchain_output_col: Optional, filename: str, export:bool=True): 
+def manage_files_safely(export, filename: str, langchain_output_col: Optional[str], data: Optional[any]=None,): 
   # Warning: AIMessage langchain objects are not recoverable when an entire dataframe is exported 
   # into Excel file 
   if export is True:
