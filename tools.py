@@ -1,6 +1,6 @@
 import pandas as pd 
 from pydantic import BaseModel, Field
-from typing import List, Optional, Annotated, Union, Tuple
+from typing import List, Optional, Annotated, Union, Tuple, Callable, Any
 from langchain_openai import ChatOpenAI
 from langchain_core.messages.ai import AIMessage
 from langchain_core.load.dump import dumpd
@@ -16,24 +16,73 @@ from transformers import BertModel, BertTokenizer
 import torch
 import numpy as np
 
+def construct_prompt(instructions: str, 
+                     few_shot: bool, 
+                     continuation_texts: str, 
+                     few_shot_texts: Optional[List[str]] = None, 
+                     few_shot_answers: Optional[List[int]] = None, 
+                     few_shot_num: Optional[int] = 3) -> str:
+    """Takes prompt instructions, a question, and optional few-shot examples, randomizes the few-shot examples,
+    adds contextual calibration into a fully constructed prompt. 
 
-
-model_name = 'bert-base-uncased'
-bert_tokenizer = BertTokenizer.from_pretrained(model_name)
-bert_model = BertModel.from_pretrained(model_name)
-bert_model.eval()
-
-def generate_json_str(codes = None):
-    """Generate example outputs of JSON object given few shot example human-labels
     Args:
-        codes (tuple): A tuple of COUNTS (sum of digital design codes), SHORT DESCRIPTIONS of each design, and REASON for why design satisfies inclusion criteria
+        instructions (str): Prompt 
+        few_shot (bool): If prompt provides few shot examples 
+        continuation_texts (str): Question
+        few_shot_texts (Optional[List[str]], optional): A list of few shot examples. Defaults to None.
+        few_shot_answers (Optional[List[int]], optional): A list of few shot answers. Defaults to None.
+        few_shot_num (Optional[int], optional): How many few shot examples to use? Defaults to 3.
+
+    Returns:
+        full_prompt (str): A fully constructed prompt that can be used as input for language model.
+    """
+    
+    
+    prompt = instructions.strip() + "\n\n"
+    
+    prompt_structure = ChatPromptTemplate.from_template(prompt + "{exemplar_icl}" + "{text}" + "\n\nAnswer:\n")
+
+    if few_shot == True: 
+        
+        ## Shuffle codes to prevent recency bias (Zhao et. al 2021)
+        examples = list(zip(few_shot_texts, few_shot_answers))
+        random.shuffle(examples)
+        few_shot_texts, few_shot_answers = zip(*examples)
+        
+        few_shot_examples =""
+        
+        for i in range(min(few_shot_num, len(few_shot_texts))): 
+            few_shot_examples += "\n\n###Examples:\n" + few_shot_texts[i] + "\n\n###Answer:\n" + few_shot_answers[i]
+
+        ## Optional contextual calibration (Zhao et al. 2021)
+        few_shot_examples += "\n\n###Examples:\n" + "N/A [MASK] [MASK]" + "\n\n###Answer:\n" + "N/A" + "\n\n"
+            
+            
+    else: 
+        few_shot_examples = " "
+    
+    full_prompt = prompt_structure.format(exemplar_icl=few_shot_examples, text=continuation_texts)
+        
+    return full_prompt
+
+
+
+def generate_json_str_task_1(codes: Tuple[Any, Any, Any]= None) -> Union[str, Any]:
+    """Generate example outputs of JSON string given a list of few shot example human-labels for task 1 (estimating number of design)
+
+    Args:
+        codes (Tuple[Any, Any, Any], optional): A tuple of COUNTS (sum of digital design codes), SHORT DESCRIPTIONS of each design, and REASON for why design satisfies inclusion criteria. Defaults to None.
+
     Raises:
         KeyError: if the length of descriptions or reasons does not match the COUNT
+        KeyError: if the length of descriptions or reasons does not match the COUNT
+
+    Returns:
+        Union[str, Any]: _description_
     """
     if not codes:
         return "N/A"
     
-    ### Move the generating example actions after the formating 
     count, short_descripts, reason = codes 
 
     if count == 1: 
@@ -56,50 +105,16 @@ def generate_json_str(codes = None):
     output = {"actions": actions, "count": count}
     return json.dumps(output, indent=4)
 
-# Outputs a nicely constructed prompt given this information 
 
-def construct_prompt(coding_instructions: str, 
-                     few_shot: bool,
-                     continuation_text: str,
-                     few_shot_num: Optional[int] = 4,
-                     few_shot_texts: Optional[List[str]] = None, 
-                     few_shot_codes: Optional[List[int]] = None
-                     ) -> str:
-    """Construct prompts for the dataframe, randomizes examples, randomizes the deductive codes to prevent LLM recency bias and 
-    focus on internalizing the concept extraction tasks
+def str_to_json(response: str) -> Any:
+    """Parse JSON string and convert back to JSON object. Takes an input and decode string into JSON output.
 
     Args:
-        coding_instructions (str): Manual instructions to type out 
-        few_shot (bool): Whether the model is few shot or zero shot 
-        few_shot_texts (List[str]): A few text examples 
-        few_shot_codes (List[int]): A few deductively coded examples for the corresponding texts
+        response (str): A JSON-formatted string
+
+    Returns:
+        _type_: A JSON object or none if the parsing fails. 
     """
-    ## Initial instruction 
-    prompt = coding_instructions + "\n\n"
-
-    prompt_out = ChatPromptTemplate.from_template(prompt + "{exemplar_icl}" + "{continuation_text}" + "\n\nAnswer:\n")
-
-    if few_shot == True: 
-        ## Permute examples to limit recency bias (Zhao et al. 2021)
-        examples = list(zip(few_shot_texts, few_shot_codes))
-        random.shuffle(examples)
-        few_shot_texts, few_shot_codes = zip(*examples)
-        
-        few_shot_examples = ""
-        for i in range(min(few_shot_num, len(few_shot_codes))): 
-            json_out = generate_json_str(few_shot_codes[i])
-            few_shot_examples += "\n###\nExamples:" + few_shot_texts[i] + "\nAnswer:\n" + json_out
-
-        ## Provide contextual calibration (Zhao et al. 2021)
-        few_shot_examples += "\n###\nExamples: " + "N/A [MASK] [MASK]" + "\nAnswer:\n" + "N/A" + "\n\n"
-    if few_shot == False: 
-        few_shot_examples = " "
-        
-    formatted_prompt = prompt_out.format(exemplar_icl=few_shot_examples, continuation_text=continuation_text)
-    return formatted_prompt
-
-
-def str_to_json(response: str):
     try: 
         res = response.strip('```').strip('json')
         return json.loads(res)
@@ -109,6 +124,7 @@ def str_to_json(response: str):
         return None
     
 
+## We can comment this out
 def parse_json_string(response: str):
     """Decodes LLM output (str) into JSON object"""
     try: 
@@ -120,9 +136,23 @@ def parse_json_string(response: str):
         print('Failed to decode JSON object.')
         return None 
     
-def parse_val_from_json_string(json_string, key):
-    """Extract output from JSON object such as "count", "actions" """
+    
+def parse_val_from_json_string(json_string: str, 
+                               key: str) -> Any:
+    """Parse a JSON string and extract the value(s) associated with a given key.
 
+    If the key is found at the top level of the JSON object, its value is returned.
+    If not, but the key is found in any item within a list under the "actions" key,
+    a list of matching values is returned.
+    If the key is not found at all, a message is returned.
+
+    Args:
+        json_string (str): The input JSON string to parse.
+        key (str): The key to look for in the JSON object.
+
+    Returns:
+        Any: The value(s) associated with the key, a not-found message, or an error message.
+    """
     try:  
         json_out = parse_json_string(json_string)
         if key in json_out:
@@ -138,13 +168,24 @@ def parse_val_from_json_string(json_string, key):
         return f"Error: {e}"
 
 
-def compute_cohen_kappa(evaluation_df, machine_coder, y1, y2):
-    """Passes in a dataframe of three columns with values of machine coders and two humans.
+def compute_cohen_kappa(evaluation_df: pd.DataFrame,
+                        machine_coder: str, 
+                        y1: str, 
+                        y2: str) -> Tuple[float, float, float]:
+    """Compute Cohen's kappa scores between a machine coder and two human coders,
+    as well as the agreement between the two human coders.
+    
     Args:
-        evaluation_df (pandas.DataFrame): pandas.DataFrame name 
-        machine_coder (str): name of machine coder column
-        y1 (str): name of human coder 1 column
-        y2 (str): name of human coder 2 column 
+        evaluation_df (pd.DataFrame): A DataFrame containing the annotations
+        machine_coder (str): Column name for machine-generated labels
+        y1 (str): Column name of first human coder's label
+        y2 (str): Column name of second human coder's label
+
+    Returns:
+        Tuple[float, float, float]: 
+            - Cohen's kappa between machine and human 1,
+            - Cohen's kappa between machine and human 2,
+            - Cohen's kappa between human 1 and human 2.
     """
     evaluation_df = evaluation_df.copy()
     evaluation_df[machine_coder] = evaluation_df[machine_coder].astype(int)
@@ -160,11 +201,26 @@ def compute_cohen_kappa(evaluation_df, machine_coder, y1, y2):
     return y1_k, y2_k, between_humans_k
     
 
-def embed_reasoning(reasonings, tokenizer, embedding_model):
+model_name = 'bert-base-uncased'
+bert_tokenizer = BertTokenizer.from_pretrained(model_name)
+bert_model = BertModel.from_pretrained(model_name)
+bert_model.eval()
+
+
+def embed_reasoning(reasonings: str, 
+                    tokenizer: Any, 
+                    embedding_model: Any) -> Union[None, torch.Tensor]:
+    """Embeds reasoning text using a transformer model and returns a pooled vector.
+
+
+    Args:
+        reasonings (str): Input text (single string or multiple sentences concatenated).
+        tokenizer (Any): HuggingFace tokenizer for the embedding model.
+        embedding_model (Any):  Pretrained transformer model that outputs embeddings.
+
+    Returns:
+        Union[None, torch.Tensor]: A pooled embedding tensor (usually size [1, 768]) or None if input is None.
     """
-    Takes an list of list where each list is multiple sentnces and returns and returns a pooled vector summarizing the sentence's embeddings.
-    """
-    
     if reasonings is None: 
         return None
     input = tokenizer(reasonings,return_tensors="pt", padding=True, truncation=True)
@@ -175,13 +231,15 @@ def embed_reasoning(reasonings, tokenizer, embedding_model):
 
 
 def compare_reasoning(tensors: List[torch.Tensor]) -> Tuple[int, torch.Tensor]: 
-    """Computes the closest tensor to the mean of a list of tensors 
+    """Given a list of tensor, this function identifies the closest pooled vector to the average of the vectors using cosine similarity
 
     Args:
-        tensors (List[torch.Tensor]): Takes a list of tensors 
+        tensors (List[torch.Tensor]): A list of tensors size typically [1, 768]
 
     Returns:
-        Tuple[int, torch.Tensor]: Tensor closest to the mean 
+        Tuple[int, torch.Tensor]: 
+            - Index of the tensor closest to the mean embedding,
+            - The corresponding tensor itself.
     """
     mean_embedding = torch.mean(torch.stack(tensors), dim = 0)
     low_cos_sim = -1
@@ -202,11 +260,19 @@ def compare_reasoning(tensors: List[torch.Tensor]) -> Tuple[int, torch.Tensor]:
 
 misc_tokens = ['```', ' ', '\n', '_', 'A', ':']
 
-def compute_perplexity(input: List[List[Tuple[str, int]]]): 
-    """Input is a list of list of token, logprob pairs retrieved from Langchain AIMessage object."""
-    
-    ## Compute perplexity scores for all list of token-logprob pairs 
-    
+def compute_perplexity(input: List[List[Tuple[str, int]]]) -> Tuple[int,List[float]]: 
+    """
+    Computes perplexity scores from token-logprob pairs, and returns the index
+    of the sequence with the lowest perplexity (i.e., most fluent).
+
+    Args:
+        input (List[List[Tuple[str, float]]]): A list where each element is a list of (token, logprob) tuples.
+
+    Returns:
+        Tuple[int, List[float]]: 
+            - Index of the sequence with lowest perplexity.
+            - List of perplexity scores for all sequences.
+    """
     perplexity_scores = []
     for i in range(len(input)): 
         log_vals = []
@@ -216,7 +282,7 @@ def compute_perplexity(input: List[List[Tuple[str, int]]]):
         
         n = len(log_vals)
         perplexity = np.exp(-1/n * (np.sum(np.asarray(log_vals))))
-        perplexity_scores.append(perplexity )
+        perplexity_scores.append(perplexity)
         
     ## Calculate the minimum perplexity score 
     
@@ -225,7 +291,7 @@ def compute_perplexity(input: List[List[Tuple[str, int]]]):
     return id, perplexity_scores
 
 
-def self_consistency_gen(prompt: str, model: any, num_iterations: int) -> Tuple[List, List]: 
+def self_consistency_gen(prompt: str, model: Any, num_iterations: int) -> Tuple[List, List]: 
     """Queries the LLM for a number of iterations 
 
     Args:
@@ -254,7 +320,7 @@ def parse_langchain_output(ai_message: List[AIMessage]) -> Tuple[Tuple, str, int
         TypeError: If input is not a Langchain AIMessage object
 
     Returns:
-        Tuple: Response and other metadata information
+        Tuple[Tuple, str, str]: Response and other metadata information
     """
     
     if not isinstance(ai_message, AIMessage):
@@ -272,209 +338,136 @@ def parse_langchain_output(ai_message: List[AIMessage]) -> Tuple[Tuple, str, int
     return token_log_pair, content, token_usage
 
 
-def assess_self_consistency_perplexity(message_list): 
+def assess_self_consistency_perplexity(message_list: List[AIMessage]) -> Tuple[str, List[float], int, List[str], int]: 
+    """Evaluates self-consistency in reasoning by identifying the best reasoning path 
+    based on perplexity scores and the most common 'count' value.
 
-  zipped_outputs = [parse_langchain_output(message) for message in message_list]
-  token_log_pairs, res, token_use = zip(*zipped_outputs)
-  
-  total_token_use = sum(token_use)
-  print(total_token_use)
-  
-  count_list = [parse_val_from_json_string(rs, "count") for rs in res]
-  print(type(res[0]))
-  print(count_list)
-  
-  cache_reason = list(zip(token_log_pairs, count_list, res))
-  
-  print(len(cache_reason))
-  
-  count_dict = Counter(count_list)
-  
-  most_common_n = count_dict.most_common(1)[0][0]
-  
-  
-  relevant_t_l_pairs = [log_pairs for log_pairs, count, _ in cache_reason if count == most_common_n]
-  margin_paths = [res for _, count, res in cache_reason if count != most_common_n]
-  
-  id_min, perplexity_list = compute_perplexity(relevant_t_l_pairs)
-  
-  min_perplexity_score = perplexity_list[id_min]
-  
-  _, _, best_response = cache_reason[id_min]
-  
-  return best_response, perplexity_list, most_common_n, margin_paths, total_token_use
+    Args:
+        message_list (List[str]): A list of Langchain message outputs containing token-logprob pairs.
 
-def self_consistency_assess(pathways, langchain_output, embedding_model, tokenizer): 
-    reasoning_paths = []
-    count_paths = []
-    perplexity = []
+    Returns:
+        Tuple[str, List[float], int, List[str], int]: 
+            - Best response (string) with lowest perplexity.
+            - List of perplexity scores for all sequences.
+            - The most common count value.
+            - List of paths with non-common count.
+            - Total token use across all messages.
+    """
+
+    zipped_outputs = [parse_langchain_output(message) for message in message_list]
+    token_log_pairs, res, token_use = zip(*zipped_outputs)
     
-    for paths in pathways: 
-        reasons = parse_val_from_json_string(paths, "reasons")
-        counts = parse_val_from_json_string(paths, "count")
+    total_token_use = sum(token_use)
+    
+    count_list = [parse_val_from_json_string(rs, "count") for rs in res]
+
+    
+    cache_reason = list(zip(token_log_pairs, count_list, res))
+    
+    count_dict = Counter(count_list)
+    
+    most_common_n = count_dict.most_common(1)[0][0]
+    
+    
+    relevant_t_l_pairs = [log_pairs for log_pairs, count, _ in cache_reason if count == most_common_n]
+    margin_paths = [res for _, count, res in cache_reason if count != most_common_n]
+    
+    id_min, perplexity_list = compute_perplexity(relevant_t_l_pairs)
+    
+    min_perplexity_score = perplexity_list[id_min]
+    
+    _, _, best_response = cache_reason[id_min]
+    
+    return best_response, perplexity_list, most_common_n, margin_paths, total_token_use
+  
+
+def custom_serialization(ai_messages: List[AIMessage]) -> str:
+    """Takes the output of a Langchain query and converts it into a 
+
+    Args:
+        ai_messages (AIMessage): _description_
+
+    Returns:
+        str: _description_
+    """
+    serialized = []
+  
+    for message in ai_messages: 
+        serialized.append(dumpd(message))
+    
+    return serialized
+  
+
+def recover_langchain_obj(serialized_objects: str) -> List[AIMessage]:
+    """Recover AIMessage object from serialized objects (or JSON string)
+
+    Args:
+        serialized_objects (str): А list of formatted JSON string originally parsed from a Langchain object AIMessage
+
+    Returns:
+        List[AIMessage]: A list of recovered Langchain AIMessage object
+    """
+    langchain_class = []
+    
+    for obj in serialized_objects: 
+        langchain_class.append(load(obj))
         
-        # Naive method 
-        reasoning_paths.append(reasons)
-        count_paths.append(counts)
-    
-    for ai_output in langchain_output: 
-        # Perplexity method 
-        perplexity.append(compute_perplexity(ai_output))
-    
-    count_dicts = Counter(count_paths)
-    most_common_number = count_dicts.most_common(1)[0][0]
-    
-    cache_reason = list(zip(count_paths, reasoning_paths, pathways, perplexity))
-    
-    ### Find the worst reasoning paths 
-    margin_paths  = [cache[1] for cache in cache_reason if cache[0] != most_common_number]
-    
-    ## Find the best reasoning path 
-    
-    dominant_paths = [cache[1] for cache in cache_reason if cache[0] == most_common_number]
-    
-    embedded_reasons_list = [embed_reasoning(reasonings=x, tokenizer=tokenizer, embedding_model=embedding_model) for x in dominant_paths]
-    avg_embedded_reasons_list = [torch.mean(embed_group, dim=0) for embed_group in embedded_reasons_list]
-    id, _ = compare_reasoning(avg_embedded_reasons_list)
-    dom_reason = dominant_paths[id]
-    
-    _, dom_perplex = min(enumerate(dominant_paths), key=lambda x: x[1][3])
-    
-    dom_r_perplex = dom_perplex[1][0]
-    # perplexity_id = [cache[4] for cache in cache_reason if cache[0] == most_common_number]
-    
-    # dom_r_perplex = dominant_paths[perplexity_id]
-    
-    if not dom_reason or not dom_r_perplex or not most_common_number: 
-        print("Inspect reasoning")
-        dom_reason = "N/A"
-        dom_r_perplex = "N/A"
-        most_common_number = 999
-        
-    if not perplexity: 
-        print('Perplexity list is empty')
-    
-    if not margin_paths:
-        margin_paths = "N/A"
-        
-    
-    return dom_reason, dom_r_perplex, perplexity, margin_paths, most_common_number
+    return langchain_class
 
+def manage_files_safely(export: bool, 
+                        filename: str, 
+                        langchain_output_col: Optional[str], 
+                        data: Optional[Any] = None) -> Optional[pd.DataFrame]:
+    """
+    Safely exports a DataFrame containing Langchain objects to JSON and re-imports it.
+    Ensures custom serialization and recovery of Langchain objects.
 
+    Args:
+        export (bool): Whether to export the data or just load from file.
+        filename (str): The JSON filename to save to or load from.
+        langchain_output_col (Optional[str]): The column containing Langchain AIMessage objects.
+        data (Optional[Any]): The DataFrame to export, required if export=True.
+
+    Returns:
+        Optional[pd.DataFrame]: The DataFrame with recovered Langchain objects.
+    """
+
+    if export:
+        if data is None or langchain_output_col is None:
+            print("Export requested but data or langchain_output_col not provided.")
+            return None
+        
+        df = data.copy()
+
+        # Make Langchain class serializable
+        df[langchain_output_col] = df[langchain_output_col].apply(custom_serialization)
+
+        # Convert to dictionary and export as JSON
+        df_dict = df.to_dict(orient='records')
+        with open(filename, "w") as file:
+            json.dump(df_dict, file)
+            print(f"Exported JSON to {filename}")
+
+    # Load from file
+    with open(filename, "r") as file:
+        ret_dict = json.load(file)
+        print(f"Loaded JSON from {filename}")
+
+    # Recover Langchain objects
+    ret_df = pd.DataFrame(ret_dict)
+    if langchain_output_col:
+        ret_df[langchain_output_col] = ret_df[langchain_output_col].apply(recover_langchain_obj)
+        print(f"Recovered Langchain objects in column '{langchain_output_col}'")
+
+    return ret_df
+  
+  
 def safe_self_consistency(x, client, n):
     try:
         return pd.Series(self_consistency_gen(prompt = x, model=client, num_iterations=n))
     except Exception as e:
         print("Error processing row:", e)
         return pd.Series([None] * 2)
-    
-def self_consistency_assess_all(pathways, langchain_output):
-    self_consist_dict = {
-        "pathways": pathways,
-        "langchain_output": langchain_output,
-        "embedding_model": bert_model,
-        "tokenizer": bert_tokenizer
-        
-    }
-    try: 
-
-        ## Input validation
-        if not isinstance(pathways, list):
-            raise ValueError(f"Pathways must be list-like, got {type(pathways)}")
-        if not pathways:
-            raise ValueError(f"Pathways is empty")
-
-        if not isinstance(langchain_output, list):
-            raise TypeError(f"Langchain output is not in a list")
-        
-        for i, item in enumerate(langchain_output):
-            if not isinstance(item, AIMessage):
-                raise TypeError(
-                    f"Individual langchain outputs not individual AIMessage instances."
-                    f"Found {type(item).__name__} at index {i}. "
-                    )
-
-        return pd.Series(self_consistency_assess(**self_consist_dict))
-    except Exception as e:  
-        print(f"Error assessing reasonings{e}")
-        return pd.Series([None] * 5)
-
-
-def run_llm_model(model, 
-                  df, 
-                  df_col,
-                  instructions): 
-    sample_df = df.loc[(df['Q2_e'] == "Yes") & (df['Q2_s'] == "Yes") & (df['Q3_e'] <= 4) & (df['Q3_s'] <= 4)]
-    sample_df.reset_index(drop=True, inplace=True)
-    num = min(len(sample_df), 40)
-    sample_df = sample_df.iloc[0:num]
-
-    
-    sample_df['prompt'] = sample_df.loc[:, df_col].apply(lambda x: construct_prompt(coding_instructions=instructions,
-                                                                                                    few_shot=False,
-                                                                                                    continuation_text=x))
-    
-    sample_df['json_output'] = sample_df['prompt'].apply(lambda x: model.invoke(x))
-    sample_df['machine_count'] = sample_df['json_output'].apply(lambda x: parse_val_from_json_string(x.content, "count"))
-
-    sample_df = sample_df.dropna(subset=['machine_count'])
-    evaluate_matrix = sample_df[['machine_count', 'Q3_e', 'Q3_s']].astype(int)
-
-    y1_k, y2_k, bet_k = compute_cohen_kappa(evaluate_matrix, 'machine_count', 'Q3_e', 'Q3_s')
-        
-    return sample_df, y1_k, y2_k, bet_k
-
-
-
-def custom_serialization(ai_messages):
-  serialized = []
-  
-  for message in ai_messages: 
-    serialized.append(dumpd(message))
-    
-  return serialized
-  
-
-def recover_langchain_obj(serialized_objects):
-  langchain_class = []
-  
-  for obj in serialized_objects: 
-    langchain_class.append(load(obj))
-    
-  return langchain_class
-
-def manage_files_safely(export, filename: str, langchain_output_col: Optional[str], data: Optional[any]=None,): 
-  # Warning: AIMessage langchain objects are not recoverable when an entire dataframe is exported 
-  # into Excel file 
-  if export is True:
-    df = data.copy()
-  
-    # Make Langchain class serializable 
-    df[langchain_output_col] = df[langchain_output_col].apply(custom_serialization) 
-  
-    # Convert dataframe to a dictionary to save as JSON file 
-    df_dict = df.to_dict(orient='records')
-
-    # Export as JSON file   
-    with open(filename, "w") as file: 
-        json.dump(df_dict, file)
-        print("Done exporting as JSON file...")
-    # Test to see if the JSON file is a success
-    
-  with open(filename, "r") as file: 
-        ret_dict = json.load(file)
-        print("Done re-importing JSON file...")
-        
-    # Recover the Langchain object 
-  ret_df = pd.DataFrame(ret_dict)
-  ret_df[langchain_output_col] = ret_df[langchain_output_col].apply(recover_langchain_obj)
-
-  print(ret_df[langchain_output_col])
-
-  return ret_df 
-  
-
-
 
 ### DEPRECATED: 
 # def self_consistency(prompt, 
@@ -550,5 +543,90 @@ def manage_files_safely(export, filename: str, langchain_output_col: Optional[st
 
 
 
+# def self_consistency_assess(pathways, langchain_output, embedding_model, tokenizer): 
+#     reasoning_paths = []
+#     count_paths = []
+#     perplexity = []
+    
+#     for paths in pathways: 
+#         reasons = parse_val_from_json_string(paths, "reasons")
+#         counts = parse_val_from_json_string(paths, "count")
+        
+#         # Naive method 
+#         reasoning_paths.append(reasons)
+#         count_paths.append(counts)
+    
+#     for ai_output in langchain_output: 
+#         # Perplexity method 
+#         perplexity.append(compute_perplexity(ai_output))
+    
+#     count_dicts = Counter(count_paths)
+#     most_common_number = count_dicts.most_common(1)[0][0]
+    
+#     cache_reason = list(zip(count_paths, reasoning_paths, pathways, perplexity))
+    
+#     ### Find the worst reasoning paths 
+#     margin_paths  = [cache[1] for cache in cache_reason if cache[0] != most_common_number]
+    
+#     ## Find the best reasoning path 
+    
+#     dominant_paths = [cache[1] for cache in cache_reason if cache[0] == most_common_number]
+    
+#     embedded_reasons_list = [embed_reasoning(reasonings=x, tokenizer=tokenizer, embedding_model=embedding_model) for x in dominant_paths]
+#     avg_embedded_reasons_list = [torch.mean(embed_group, dim=0) for embed_group in embedded_reasons_list]
+#     id, _ = compare_reasoning(avg_embedded_reasons_list)
+#     dom_reason = dominant_paths[id]
+    
+#     _, dom_perplex = min(enumerate(dominant_paths), key=lambda x: x[1][3])
+    
+#     dom_r_perplex = dom_perplex[1][0]
+#     # perplexity_id = [cache[4] for cache in cache_reason if cache[0] == most_common_number]
+    
+#     # dom_r_perplex = dominant_paths[perplexity_id]
+    
+#     if not dom_reason or not dom_r_perplex or not most_common_number: 
+#         print("Inspect reasoning")
+#         dom_reason = "N/A"
+#         dom_r_perplex = "N/A"
+#         most_common_number = 999
+        
+#     if not perplexity: 
+#         print('Perplexity list is empty')
+    
+#     if not margin_paths:
+#         margin_paths = "N/A"
+        
+    
+#     return dom_reason, dom_r_perplex, perplexity, margin_paths, most_common_number
 
 
+# def self_consistency_assess_all(pathways, langchain_output):
+#     self_consist_dict = {
+#         "pathways": pathways,
+#         "langchain_output": langchain_output,
+#         "embedding_model": bert_model,
+#         "tokenizer": bert_tokenizer
+        
+#     }
+#     try: 
+
+#         ## Input validation
+#         if not isinstance(pathways, list):
+#             raise ValueError(f"Pathways must be list-like, got {type(pathways)}")
+#         if not pathways:
+#             raise ValueError(f"Pathways is empty")
+
+#         if not isinstance(langchain_output, list):
+#             raise TypeError(f"Langchain output is not in a list")
+        
+#         for i, item in enumerate(langchain_output):
+#             if not isinstance(item, AIMessage):
+#                 raise TypeError(
+#                     f"Individual langchain outputs not individual AIMessage instances."
+#                     f"Found {type(item).__name__} at index {i}. "
+#                     )
+
+#         return pd.Series(self_consistency_assess(**self_consist_dict))
+#     except Exception as e:  
+#         print(f"Error assessing reasonings{e}")
+#         return pd.Series([None] * 5)
