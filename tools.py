@@ -516,7 +516,6 @@ def jaccard_similarity(a, b):
     
     return len(a_set & b_set) / len(a_set | b_set)
 
-    
 
 def soft_matching(
     output_list: List[Tuple[str, Union[int, set]]],
@@ -538,31 +537,72 @@ def soft_matching(
     Returns:
         float: Mean Jaccard similarity for matched text pairs.
     """
-
-    embedded_vector = [embed_reasoning(text, tokenizer, model) for text, _ in output_list]
-    comparison_vector = [embed_reasoning(text, tokenizer, model) for text, _ in comparison_list]
-
-    jaccard_scores = []
-    for i, emb1 in enumerate(embedded_vector):
-        for j, emb2 in enumerate(comparison_vector):
-            cos_sim = torch.nn.functional.cosine_similarity(emb1, emb2).item()
-            if cos_sim > threshold:
-                jac_sim = jaccard_similarity(output_list[i][1], comparison_list[j][1])
-                jaccard_scores.append(jac_sim)
-    print(
-        f"""Number of soft-matched sentences: {len(jaccard_scores)}
-            Jaccard scores: {jaccard_scores}
-        """
-        )
-    
-    return np.mean(jaccard_scores) if jaccard_scores else 0.0
-
-            
-            
-    
-    
+    if not output_list or not comparison_list:
+        return 0.0
+    else: 
+        embedded_vector = [embed_reasoning(text, tokenizer, model) for text, _ in output_list]
+        comparison_vector = [embed_reasoning(text, tokenizer, model) for text, _ in comparison_list]
+        jaccard_scores = []
+        for i, emb1 in enumerate(embedded_vector):
+            for j, emb2 in enumerate(comparison_vector):
+                cos_sim = torch.nn.functional.cosine_similarity(emb1, emb2).item()
+                if cos_sim > threshold:
+                    jac_sim = jaccard_similarity(output_list[i][1], comparison_list[j][1])
+                    jaccard_scores.append(jac_sim)
         
+        return np.mean(jaccard_scores) if jaccard_scores else 0.0
 
+    
+   
+def within_observation_soft_matching(df, col_machine, col_hc_1, col_hc_2, threshold, tokenizer, embedding_model, exclude_null=True):
+    """Soft-matching design changes within articles"""
+    dataset = df.where(pd.notna(df), None).copy()
+    print('Step 1---------')
+    
+    if exclude_null: 
+        dataset=dataset.dropna(subset=[col_machine, col_hc_1])
+    dataset['jaccard_score_hc1'] = dataset.apply(
+        lambda row: soft_matching(output_list=row[col_machine],
+                                    comparison_list=row[col_hc_1],
+                                    threshold=threshold,
+                                    tokenizer=tokenizer,
+                                    model=embedding_model), axis=1)
+    jc1 = dataset['jaccard_score_hc1'].mean()
+    
+    dataset = df.where(pd.notna(df), None).copy()
+    print('Step 2---------')
+    
+    if exclude_null: 
+        dataset=dataset.dropna(subset=[col_machine, col_hc_2])
+    dataset['jaccard_score_hc2'] = dataset.dropna(subset=[col_machine, col_hc_2]).apply(
+        lambda row: soft_matching(output_list=row[col_machine],
+                                    comparison_list=row[col_hc_2],
+                                    threshold=threshold,
+                                    tokenizer=tokenizer,
+                                    model=embedding_model), axis=1)
+    
+    jc2 = dataset['jaccard_score_hc2'].mean()
+
+    dataset = df.where(pd.notna(df), None).copy()
+    print('Step 3---------')
+    
+    if exclude_null: 
+        dataset=dataset.dropna(subset=[col_hc_1, col_hc_2])
+    dataset['jaccard_score_inter'] = dataset.dropna(subset=[col_hc_1, col_hc_2]).apply(
+        lambda row: soft_matching(output_list=row[col_hc_1],
+                                  comparison_list=row[col_hc_2],
+                                  threshold=threshold,
+                                  tokenizer=tokenizer,
+                                  model=embedding_model), axis=1)
+    
+    jc3 = dataset['jaccard_score_inter'].mean()
+
+    
+    print(f'Jaccard similarity between machine and first HC: {jc1}')
+    print(f'Jaccard similarity between machine and second HC: {jc2}')
+    print(f'Jaccard similarity between human coders: {jc3}')
+    
+    return dataset, jc1, jc2, jc3
 ### DEPRECATED: 
 # def self_consistency(prompt, 
 #                      model, 

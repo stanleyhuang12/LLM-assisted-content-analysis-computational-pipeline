@@ -1,0 +1,395 @@
+,article_desc,best_res_perplex,best_res_perplex_annot,best_res_perplex_classify,n,Q3_e,Q3_s
+0,"Today we’re publishing ourCommunity Standards Enforcement Reportfor the fourth quarter of 2020. This report provides metrics on how we enforced our policies from October through December, including metrics across 12 policies on Facebook and 10 on Instagram.
+Last quarter, we shared theprevalence of hate speechon Facebook for the first time to show the percentage of times people see this type of content on our platform. This quarter, hate speech prevalence dropped from 0.10-0.11% to 0.07-0.08%, or 7 to 8 views of hate speech for every 10,000 views of content. The prevalence of violent and graphic content also dropped from 0.07% to 0.05% and adult nudity content dropped from 0.05-0.06% to 0.03-0.04%.
+
+Our improvements in prevalence are mainly due to changes we made to reduce problematic content in News Feed. Each post is ranked by processes that take into account a combination of integrity signals, such as how likely a piece of content is to violate our policies, as well as signals we receive from people, such as from surveys or actions they take on our platform like hiding or reporting posts. Improving how we use these signals helps tailor News Feed to each individual’s preferences, and also reduces the number of times we display posts that later may be determined to violate our policies.
+Our proactive rate, the percentageof content we took action on that we found before a user reported it to us, improved in certain problem areas, most notably bullying and harassment.Our proactive rate for bullying and harassment went from 26% in Q3 to 49% in Q4 on Facebook, and 55% to 80% on Instagram.Improvements to our AIin areas where nuance and context are essential, such as hate speech or bullying and harassment, helped us better scale our efforts to keep people safe.
+
+We’re slowly continuing to regain our content review workforce globally, though we anticipate our ability to review content will be impacted by COVID-19 until a vaccine is widely available. With limited capacity, we prioritize the most harmful content for our teams to review, such as suicide and self-injury content.
+On Facebook in Q4 we took action on:
+On Instagram in Q4 we took action on:
+This year, we plan to share additional metrics on Instagram and add new policy categories on Facebook. We’re also working to make our enforcement data easier for people to understand by making these reports more interactive. Our goal is to lead the technology industry in transparency, and we’ll continue to share more enforcement metrics as part of this effort. We also believe that no company should grade its own homework. Last year, we committed toundertakinganindependent, third-party audit of our content moderation systems to validate the numbers we publish, and we’llbegin this process this year.
+We will continue building on this progress and improving our technology and enforcement efforts to keep harmful content off of our apps.","```json
+{
+  ""actions"": [
+    {
+      ""id"": ""A1"",
+      ""summary"": ""Improved AI for detecting hate speech and bullying."",
+      ""reasons"": ""This action satisfies I1 as it is associated with reducing digital harm by improving detection of hate speech and bullying. It satisfies I2 as it involves a well-defined update to AI technology. It satisfies I3 as it has already been implemented, as evidenced by the improved proactive rate metrics.""
+    },
+    {
+      ""id"": ""A2"",
+      ""summary"": ""Changes to News Feed ranking to reduce problematic content."",
+      ""reasons"": ""This action satisfies I1 as it is associated with reducing digital harm by decreasing the prevalence of hate speech and other harmful content. It satisfies I2 as it involves a well-defined change to the News Feed ranking process. It satisfies I3 as it has already been implemented, as evidenced by the reported decrease in prevalence of harmful content.""
+    },
+    {
+      ""id"": ""A3"",
+      ""summary"": ""Commitment to third-party audit of content moderation systems."",
+      ""reasons"": ""This action satisfies I1 as it is associated with improving transparency and accountability, which are relevant to digital well-being. It satisfies I2 as it involves a well-defined commitment to an independent audit. It satisfies I3 as it is scheduled for implementation this year.""
+    }
+  ],
+  ""count"": 3
+}
+```","```json
+{
+  ""A1"": {
+    ""extractive"": ""Improvements to our AI in areas where nuance and context are essential, such as hate speech or bullying and harassment, helped us better scale our efforts to keep people safe."",
+    ""annotations"": {
+      ""explicit_harm"": ""Addresses harm by improving detection of hate speech and bullying."",
+      ""evaluation"": ""Improved proactive rate metrics for bullying and harassment."",
+      ""automaticity"": ""The change is applied automatically through AI improvements.""
+    }
+  },
+  ""A2"": {
+    ""extractive"": ""Our improvements in prevalence are mainly due to changes we made to reduce problematic content in News Feed. Each post is ranked by processes that take into account a combination of integrity signals, such as how likely a piece of content is to violate our policies, as well as signals we receive from people, such as from surveys or actions they take on our platform like hiding or reporting posts."",
+    ""annotations"": {
+      ""explicit_harm"": ""Reduces digital harm by decreasing the prevalence of hate speech and other harmful content."",
+      ""evaluation"": ""Reported decrease in prevalence of harmful content."",
+      ""automaticity"": ""The change is applied automatically through News Feed ranking processes.""
+    }
+  },
+  ""A3"": {
+    ""extractive"": ""Last year, we committed to undertaking an independent, third-party audit of our content moderation systems to validate the numbers we publish, and we’ll begin this process this year."",
+    ""annotations"": {
+      ""explicit_harm"": ""Improves transparency and accountability, relevant to digital well-being."",
+      ""motivation"": ""Commitment to transparency and validation of published metrics."",
+      ""instruction"": ""Scheduled for implementation this year.""
+    }
+  }
+}
+```","```json
+{
+  ""classification"": {
+    ""A1"": {
+      ""explicit_harm"": [""harmful content""],
+      ""automaticity"": [""automatic""],
+      ""evaluation"": [""evaluated""]
+    },
+    ""A2"": {
+      ""explicit_harm"": [""harmful content""],
+      ""automaticity"": [""automatic""],
+      ""evaluation"": [""evaluated""]
+    },
+    ""A3"": {
+      ""explicit_harm"": [""transparency and accountability""],
+      ""motivation"": [""not mentioned/other""]
+    }
+  }
+}
+```",3,1.0,2.0
+1,"Update on June 16, 2023 at 6:00AM PT:
+Today, we are releasing our response to the recommendations the Oversight Board made in their Covid-19 misinformationPolicy Advisory Opinion.
+We will take a more tailored approach to our Covid-19 misinformation rules consistent with the Board’s guidance and our existing policies. In countries that have a Covid-19 public health emergency declaration, we will continue to remove content for violating our Covid-19 misinformation policies given the risk of imminent physical harm. We are consulting with health experts to understand which claims and categories of misinformation could continue to pose this risk. Our Covid-19 misinformation rules will no longer be in effect globally as the global public health emergency declaration that triggered those rules has been lifted.
+To learn more about our response to the board, visit ourTransparency Center.
+Originally published on July 26, 2022 at 5:00AM PT:
+Meta is asking the Oversight Board for advice on whether measures to address dangerous COVID-19 misinformation, introduced in extraordinary circumstances at the onset of the pandemic, should remain in place as many, though not all, countries around the world seek to return to more normal life.
+Misinformation related to COVID-19 has presented unique risks to public health and safety over the last two years and more. To keep our users safe while still allowing them to discuss and express themselves on this important topic, we broadened our harmful misinformation policy in the early days of the outbreak in January 2020. Before this, Meta only removed misinformation when local partners with relevant expertise told us a particular piece of content (like a specific post on Facebook) could contribute to a risk of imminent physical harm. The change meant that, for the first time, the policy would provide for removal of entire categories of false claims on a worldwide scale.
+As a result, Meta has removed COVID-19 misinformation on an unprecedented scale. Globally, more than 25 million pieces of content have been removed since the start of the pandemic. Under this policy, Meta began removing false claims about masking, social distancing and the transmissibility of the virus. In late 2020, when the first vaccine became available, we also began removing further false claims, such as the vaccine being harmful or ineffective. Meta’s policy currentlyprovides for removal of 80 distinct false claimsabout COVID-19 and vaccines.
+Meta remains committed to combating COVID-19 misinformation and providing people with reliable information. As the pandemic has evolved, the time is right for us to seek input from the Oversight Board about our measures to address COVID-19 misinformation, including whether those introduced in the early days of an extraordinary global crisis remains the right approach for the months and years ahead. The world has changed considerably since 2020. We now haveMeta’s COVID-19 Information Center, and guidance from public health authorities is more readily available. Meta’s COVID-19 Information Center has connected over two billion people across 189 countries to helpful, authoritative COVID-19 information.
+The pandemic itself has also evolved. In many countries, where vaccination rates are relatively high, life is increasingly returning to normal. But this isn’t the case everywhere and the course of the pandemic will continue to vary significantly around the globe — especially in countries with low vaccination rates and less developed healthcare systems.It is important that any policy Meta implements be appropriate for the full range of circumstances countries find themselves in.
+Meta is fundamentally committed to free expression and we believe our apps are an important way for people to make their voices heard. But some misinformation can lead to an imminent risk of physical harm, and we have a responsibility not to let this content proliferate. The policies in ourCommunity Standardsseek to protect free expression while preventing this dangerous content. But resolving the inherent tensions between free expression and safety isn’t easy, especially when confronted with unprecedented and fast-moving challenges, as we have been in the pandemic. That’s why we are seeking the advice of the Oversight Board in this case. Its guidance will also help us respond to future public health emergencies.
+The Oversight Board was established to exercise independent judgment, operating as an expert-led check and balance for Meta, with the ability to make binding decisions on specific content cases and to offer non-binding advisory opinions on its policies. We are requesting an advisory opinion from the Oversight Board on whether Meta’s current measures to address COVID-19 misinformation under our harmful health misinformation policy continue to be appropriate,or whether we should address this misinformation through other means, like labeling or demoting it either directly or through our third-party fact-checking program.","```json
+{
+  ""actions"": [
+    {
+      ""id"": ""A1"",
+      ""summary"": ""Meta will continue to remove COVID-19 misinformation in countries with a public health emergency declaration."",
+      ""reasons"": ""This action satisfies I1 as it is directly related to user safety and misinformation. It satisfies I2 as it involves a clear update to the misinformation policy, specifying that content removal will continue in certain countries. It satisfies I3 as it is scheduled for implementation in countries with a public health emergency declaration.""
+    },
+    {
+      ""id"": ""A2"",
+      ""summary"": ""Meta's COVID-19 misinformation rules will no longer be in effect globally."",
+      ""reasons"": ""This action satisfies I1 as it pertains to the handling of misinformation, which is relevant to digital well-being. It satisfies I2 as it is a well-defined change in policy, indicating the cessation of global enforcement of these rules. It satisfies I3 as it is already implemented following the lifting of the global public health emergency declaration.""
+    }
+  ],
+  ""count"": 2
+}
+```","```json
+{
+  ""A1"": {
+    ""extractive"": ""In countries that have a Covid-19 public health emergency declaration, we will continue to remove content for violating our Covid-19 misinformation policies given the risk of imminent physical harm."",
+    ""annotations"": {
+      ""explicit_harm"": ""Addresses the risk of imminent physical harm due to COVID-19 misinformation."",
+      ""entities"": ""Meta, Oversight Board"",
+      ""motivation"": ""Guidance from the Oversight Board and the presence of a public health emergency declaration."",
+      ""evidence"": ""Consultation with health experts to understand which claims and categories of misinformation could continue to pose this risk."",
+      ""geographic_scope"": ""Countries with a Covid-19 public health emergency declaration."",
+      ""automaticity"": ""The change is applied automatically in specified regions.""
+    }
+  },
+  ""A2"": {
+    ""extractive"": ""Our Covid-19 misinformation rules will no longer be in effect globally as the global public health emergency declaration that triggered those rules has been lifted."",
+    ""annotations"": {
+      ""explicit_harm"": ""Addresses the cessation of a global policy that was initially put in place to mitigate misinformation-related harm."",
+      ""entities"": ""Meta"",
+      ""motivation"": ""The lifting of the global public health emergency declaration."",
+      ""geographic_scope"": ""Global"",
+      ""automaticity"": ""The change is applied automatically following the lifting of the global declaration.""
+    }
+  }
+}
+```","```json
+{
+  ""classification"": {
+    ""A1"": {
+      ""explicit_harm"": [""external harm""],
+      ""motivation"": [""community pressure""],
+      ""automaticity"": [""automatic""],
+      ""geographic_scope"": ""Countries with a Covid-19 public health emergency declaration"",
+      ""evaluation"": [""evaluated""],
+      ""partnership"": [""non-academic research institution""]
+    },
+    ""A2"": {
+      ""explicit_harm"": [""external harm""],
+      ""motivation"": [""events""],
+      ""automaticity"": [""automatic""],
+      ""geographic_scope"": ""Global""
+    }
+  }
+}
+```",2,2.0,1.0
+2,"Update on February 6, 2024 at 1:00AM PT:
+Meta has worked with NCMEC to expand Take It Down to more languages. Millions more teens around the world will now be able to more easily use Take It Down to take back control of their intimate images and help prevent them from spreading online.
+Originally published on February 27, 2023 at 6:00AM PT:
+Today, we’re announcing that Instagram and Facebook are founding members ofTake It Down— a new platform by NCMEC to help prevent young people’s intimate images from being posted online in the future.
+Having a personal intimate image shared with others can be scary and overwhelming, especially for young people. It can feel even worse when someone tries to use those images as a threat for additional images, sexual contact or money — a crime known as sextortion.
+Take It Down lets young people take back control of their intimate images. People can go toTakeItDown.NCMEC.organd follow the instructions to submit a case that will proactively search for their intimate images on participating apps. Take It Down assigns a unique hash value — a numerical code — to their image or video privately and directly from their own device. Once they submit the hash to NCMEC, companies like ours can use those hashes to find any copies of the image, take them down and prevent the content from being posted on our apps in the future.
+Built in a way that respects young peoples’ privacy and data security, Take It Down allows people to only submit a hash — rather than the intimate image or video itself — to NCMEC. Hashing turns images or videos into a coded form that can no longer be viewed, producing hashes that are secure digital fingerprints.
+With the launch of Take It Down, people ofallages can stop the spread of their intimate images online, including:
+Take It Down was designed with Meta’s financial support. We are working with NCMEC to promote Take It Down across our platforms, in addition to integrating it into Facebook and Instagram so people can easily access it when reporting potentially violating content. Take It Down builds off of the success of platforms likeStopNCII, a platformwe launchedin 2021 with South West Grid for Learning (SWGfL) and more than 70 NGO’s worldwide, which helps adults stop the spread of their intimate images online, a practice commonly referred to as “revenge porn.”
+Metadoesn’t allow content or behavior that exploits young people, including the posting of intimate images or sextortion activities. Wework to preventthis content as well as inappropriate interactions between young people and suspicious accounts attempting to take advantage of them. For example, we default teens into the most private settings on Facebook and Instagram, we work to restrict suspicious adults from connecting with teens on those apps, and we educate teens about the dangers of engaging with adults they do not know online. We’ve also made it easier for people to report potentially harmful content, particularly if it involves a child.
+On Instagram, we recently introduced new features to make it even more difficult for suspicious adults to interact with teens. Now, these adults will no longer be able to see teen accounts when scrolling through the list of people who have liked a post or when looking at an account’s Followers or Following list. If a suspicious adult follows a teen account, we will send that teen a notification prompting them to review and remove the new follower. We are also prompting teens to review and restrict their privacy settings. When someone comments on a teen’s post, tags/mentions them in another post, or includes their content in Reels Remixes or Guides, the teen will receive a notification to review their privacy settings, and will have the option to stop people from interacting with them.
+This slideshow requires JavaScript.
+We’ve developedmore than 30 toolsto support the safety of teens and families across our apps, includingsupervision toolsfor parents andage-verification technologythat helps teens have age-appropriate experiences online. We also provideresources for teensthat inform them of the potential harms of taking intimate images, and the other ways they can find help if they want to stop the spread of that content. There are more resources for parents so they can talk to their teens about how to be safe online in ourSafety CenterandFamily Center.","```json
+{
+  ""actions"": [
+    {
+      ""id"": ""A1"",
+      ""summary"": ""Expansion of Take It Down to more languages"",
+      ""reasons"": ""This action satisfies I1 as it is associated with digital harm prevention by helping teens control the spread of their intimate images, addressing privacy and user safety. It satisfies I2 as it involves a well-defined update to the Take It Down platform by expanding its language support. It satisfies I3 as it is already implemented, as stated in the update on February 6, 2024.""
+    },
+    {
+      ""id"": ""A2"",
+      ""summary"": ""Integration of Take It Down into Facebook and Instagram"",
+      ""reasons"": ""This action satisfies I1 as it is associated with digital harm prevention by helping users control the spread of intimate images, addressing privacy and user safety. It satisfies I2 as it involves a well-defined implementation of integrating the Take It Down platform into Facebook and Instagram. It satisfies I3 as it is scheduled for implementation, as mentioned in the article.""
+    },
+    {
+      ""id"": ""A3"",
+      ""summary"": ""New Instagram features to restrict suspicious adult interactions with teens"",
+      ""reasons"": ""This action satisfies I1 as it is associated with user safety and preventing harmful interactions between adults and teens. It satisfies I2 as it involves a well-defined update to Instagram's features, restricting suspicious adults from seeing teen accounts and prompting teens to review their privacy settings. It satisfies I3 as it is already implemented, as indicated by the phrase 'we recently introduced.'""
+    }
+  ],
+  ""count"": 3
+}
+```","```json
+{
+  ""A1"": {
+    ""extractive"": ""Meta has worked with NCMEC to expand Take It Down to more languages. Millions more teens around the world will now be able to more easily use Take It Down to take back control of their intimate images and help prevent them from spreading online."",
+    ""annotations"": {
+      ""explicit_harm"": ""Addresses the harm of unauthorized sharing of intimate images, promoting user privacy and safety."",
+      ""entities"": ""Meta, NCMEC"",
+      ""motivation"": ""To enhance user safety and privacy by preventing the spread of intimate images."",
+      ""geographic_scope"": ""Global"",
+      ""demographics"": ""Teens"",
+      ""automaticity"": ""The expansion is applied automatically as it involves language support."",
+      ""instruction"": ""Users can access the expanded language support through the Take It Down platform.""
+    }
+  },
+  ""A2"": {
+    ""extractive"": ""We are working with NCMEC to promote Take It Down across our platforms, in addition to integrating it into Facebook and Instagram so people can easily access it when reporting potentially violating content."",
+    ""annotations"": {
+      ""explicit_harm"": ""Addresses the harm of intimate image distribution, enhancing user control and safety."",
+      ""entities"": ""Meta, NCMEC, Facebook, Instagram"",
+      ""motivation"": ""To facilitate easier reporting and control over intimate images on social media platforms."",
+      ""partnership"": ""NCMEC"",
+      ""automaticity"": ""Integration into platforms is automatic for users."",
+      ""instruction"": ""Users can access Take It Down through Facebook and Instagram when reporting content.""
+    }
+  },
+  ""A3"": {
+    ""extractive"": ""On Instagram, we recently introduced new features to make it even more difficult for suspicious adults to interact with teens. Now, these adults will no longer be able to see teen accounts when scrolling through the list of people who have liked a post or when looking at an account’s Followers or Following list."",
+    ""annotations"": {
+      ""explicit_harm"": ""Prevents harmful interactions between suspicious adults and teens, enhancing user safety."",
+      ""entities"": ""Instagram"",
+      ""motivation"": ""To protect teens from potential exploitation and inappropriate interactions."",
+      ""demographics"": ""Teens"",
+      ""automaticity"": ""Features are automatically applied to teen accounts."",
+      ""instruction"": ""Teens receive notifications to review and adjust their privacy settings.""
+    }
+  }
+}
+```","```json
+{
+  ""classification"": {
+    ""A1"": {
+      ""explicit_harm"": [""privacy-related concerns""],
+      ""demographics"": [""child or adolescent""],
+      ""motivation"": [""not mentioned/other""],
+      ""automaticity"": [""automatic""],
+      ""geographic_scope"": ""Global"",
+      ""instruction"": [""provide description""],
+      ""partnership"": [""nonprofits and other community groups""]
+    },
+    ""A2"": {
+      ""explicit_harm"": [""privacy-related concerns""],
+      ""motivation"": [""not mentioned/other""],
+      ""automaticity"": [""automatic""],
+      ""instruction"": [""provide description""],
+      ""partnership"": [""nonprofits and other community groups""]
+    },
+    ""A3"": {
+      ""explicit_harm"": [""harmful contact""],
+      ""demographics"": [""child or adolescent""],
+      ""motivation"": [""not mentioned/other""],
+      ""automaticity"": [""automatic""],
+      ""instruction"": [""provide description""]
+    }
+  }
+}
+```",3,4.0,3.0
+3,"Today we’re publishing the fourth edition of ourCommunity Standards Enforcement Report, detailing our work for Q2 and Q3 2019. We are now including metrics across ten policies on Facebook and metrics across four policies on Instagram.
+These metrics include:
+We also launched anew pagetoday so people can view examples of how our Community Standards apply to different types of content and see where we draw the line.
+For the first time, we are sharing data on how we are doing at enforcing our policies on Instagram. In this first report for Instagram, we are providing data on four policy areas: child nudity and child sexual exploitation; regulated goods — specifically, illicit firearm and drug sales; suicide and self-injury; and terrorist propaganda. The report does not include appeals and restores metrics for Instagram, as appeals on Instagram were only launched in Q2 of this year, but these will be included in future reports.
+While we use the same proactive detection systems to find and remove harmful content across both Instagram and Facebook, the metrics may be different across the two services. There are many reasons for this, including: the differences in the apps’ functionalities and how they’re used – for example, Instagram doesn’t have links, re-shares in feed, Pages or Groups; the differing sizes of our communities; where people in the world use one app more than another; and where we’ve had greater ability to use our proactive detection technology to date. When comparing metrics in order to see where progress has been made and where more improvements are needed, we encourage people to see how metrics change, quarter-over-quarter, for individual policy areas within an app.
+Across the most harmful types of content we work to combat, we’ve continued to strengthen our efforts to enforce our policies and bring greater transparency to our work. In addition to suicide and self-injury content and terrorist propaganda, the metrics for child nudity and sexual exploitation of children, as well as regulated goods, demonstrate this progress. The investments we’ve made in AI over the last five years continue to be a key factor in tackling these issues. In fact,recent advancements in this technologyhave helped with rate of detection and removal of violating content.
+Forchild nudity and sexual exploitation of children, we made improvements to our processes for adding violations to our internal database in order to detect and remove additional instances of the same content shared on both Facebook and Instagram, enabling us to identify and remove more violating content.
+On Facebook:
+While we are including data for Instagram for the first time, we have made progress increasing content actioned and the proactive rate in this area within the last two quarters:
+Forour regulated goods policyprohibiting illicit firearm and drug sales, continued investments in our proactive detection systems and advancements in our enforcement techniques have allowed us to build on the progress from the last report.
+On Facebook:
+On Instagram:
+Over the last two years, we’ve invested in proactive detection of hate speech so that we can detect this harmful content before people report it to us and sometimes before anyone sees it. Our detection techniques include text and image matching, which means we’re identifying images and identical strings of text that have already been removed as hate speech, and machine-learning classifiers that look at things like language, as well as the reactions and comments to a post, to assess how closely it matches common phrases, patterns and attacks that we’ve seen previously in content that violates our policies against hate.
+Initially, we’ve used these systems to proactively detect potential hate speech violations and send them to our content review teams since people can better assess context where AI cannot. Starting in Q2 2019, thanks to continued progress in our systems’ abilities to correctly detect violations, we began removing some posts automatically, but only when content is either identical or near-identical to text or images previously removed by our content review team as violating our policy, or where content very closely matches common attacks that violate our policy. We only do this in select instances, and it has only been possible because our automated systems have been trained on hundreds of thousands, if not millions, of different examples of violating content and common attacks. In all other cases when our systems proactively detect potential hate speech, the content is still sent to our review teams to make a final determination. With these evolutions in our detection systems, our proactive rate has climbed to 80%, from 68% in our last report, and we’ve increased the volume of content we find and remove for violating our hate speech policy.
+While we are pleased with this progress, these technologies are not perfect and we know that mistakes can still happen. That’s why we continue to invest in systems that enable us to improve our accuracy in removing content that violates our policies while safeguarding content that discusses or condemns hate speech. Similar to how we review decisions made by our content review team in order to monitor the accuracy of our decisions, our teams routinely review removals by our automated systems to make sure we are enforcing our policies correctly. We also continue to review content again when people appeal and tell us we made a mistake in removing their post.
+Since our last report, we have improved the ways we measure how much content we take action on after identifying an issue in our accounting this summer. In this report, we are updating metrics we previously shared for content actioned, proactive rate, content appealed and content restored for the periods Q3 2018 through Q1 2019.
+During those quarters, the issue with our accounting processes did not impact how we enforced our policies or how we informed people about those actions; it only impacted how we counted the actions we took. For example, if we find that a post containing one photo violates our policies, we want our metric to reflect that we took action on one piece of content — not two separate actions for removing the photo and the post. However, in July 2019, we found that the systems logging and counting these actions did not correctly log the actions taken. This was largely due to needing to count multiple actions that take place within a few milliseconds and not miss, or overstate, any of the individual actions taken.
+We’ll continue to refine the processes we use to measure our actions and build a robust system to ensure the metrics we provide are accurate. We share more details about these processeshere.","```json
+{
+  ""actions"": [
+    {
+      ""id"": ""A1"",
+      ""summary"": ""Implementation of proactive detection systems for hate speech on Facebook."",
+      ""reasons"": ""This action satisfies I1 as it addresses harmful content (hate speech), I2 as it involves a well-defined update to detection systems, and I3 as it was implemented starting in Q2 2019.""
+    },
+    {
+      ""id"": ""A2"",
+      ""summary"": ""Improvements in detection and removal processes for child nudity and sexual exploitation content on Facebook and Instagram."",
+      ""reasons"": ""This action satisfies I1 as it addresses harmful content related to child safety, I2 as it involves a clear update to detection processes, and I3 as it is already implemented.""
+    }
+  ],
+  ""count"": 2
+}
+```","```json
+{
+  ""A1"": {
+    ""extractive"": ""Over the last two years, we’ve invested in proactive detection of hate speech so that we can detect this harmful content before people report it to us and sometimes before anyone sees it. Our detection techniques include text and image matching, which means we’re identifying images and identical strings of text that have already been removed as hate speech, and machine-learning classifiers that look at things like language, as well as the reactions and comments to a post, to assess how closely it matches common phrases, patterns and attacks that we’ve seen previously in content that violates our policies against hate. Initially, we’ve used these systems to proactively detect potential hate speech violations and send them to our content review teams since people can better assess context where AI cannot. Starting in Q2 2019, thanks to continued progress in our systems’ abilities to correctly detect violations, we began removing some posts automatically, but only when content is either identical or near-identical to text or images previously removed by our content review team as violating our policy, or where content very closely matches common attacks that violate our policy."",
+    ""annotations"": {
+      ""explicit_harm"": ""Addresses harmful content (hate speech)"",
+      ""motivation"": ""Continued progress in systems’ abilities to correctly detect violations"",
+      ""evidence"": ""Trained on hundreds of thousands, if not millions, of different examples of violating content and common attacks"",
+      ""evaluation"": ""Proactive rate has climbed to 80%, from 68% in our last report"",
+      ""automaticity"": ""Began removing some posts automatically"",
+      ""instruction"": ""Only when content is either identical or near-identical to text or images previously removed by our content review team as violating our policy, or where content very closely matches common attacks that violate our policy""
+    }
+  },
+  ""A2"": {
+    ""extractive"": ""For child nudity and sexual exploitation of children, we made improvements to our processes for adding violations to our internal database in order to detect and remove additional instances of the same content shared on both Facebook and Instagram, enabling us to identify and remove more violating content."",
+    ""annotations"": {
+      ""explicit_harm"": ""Addresses harmful content related to child safety"",
+      ""entities"": ""Facebook and Instagram"",
+      ""motivation"": ""Improvements to processes for adding violations to internal database"",
+      ""automaticity"": ""Detect and remove additional instances of the same content"",
+      ""instruction"": ""Improvements to processes for adding violations to internal database""
+    }
+  }
+}
+```","```json
+{
+  ""classification"": {
+    ""A1"": {
+      ""explicit_harm"": [""harmful content""],
+      ""motivation"": [""not mentioned/other""],
+      ""automaticity"": [""automatic""],
+      ""evaluation"": [""evaluated""],
+      ""evaluation_nature"": [""quantitative-observational""]
+    },
+    ""A2"": {
+      ""explicit_harm"": [""harmful content""],
+      ""demographics"": [""child or adolescent""],
+      ""automaticity"": [""automatic""],
+      ""motivation"": [""not mentioned/other""]
+    }
+  }
+}
+```",2,5.0,1.0
+4,"Climate change is real. The science is unambiguous and the need to act grows more urgent by the day. As a global company that connects more than 3 billion people across our apps every month, we understand the responsibility Facebook has and we want to make a real difference.
+Every day we see our community confronting this challenge – from people making small but meaningful changes like recycling, turning off lights, using public transport or cycling, to those using our tools to organize for change in their communities or to raise more than $80 million for environmental causes.
+Facebook’s global operations will achieve net zero carbon emissions and be 100% supported by renewable energy this year. But getting our own house in order is only the start. That’s why today, ahead of Climate Week, we are announcing a new Climate Science Information Center to connect people with science-based information, and an ambitious new net zero emissions target for our company’s value chain.
+
+One of the biggest lessons we have learned from the COVID-19 pandemic is how powerful Facebook can be for connecting people to accurate, expert advice and information during a global crisis. Now, we are taking a similar approach to the climate crisis by launching a newClimate Science Information Center on Facebookto connect people to factual and up-to-date climate information. We have modeled the center and the information within it on our COVID-19 Information Center that has, so far, directed more than 2 billion people to information from health authorities, with more than 600 million people clicking through to learn more.
+The Climate Science Information Center is a dedicated space on Facebook with factual resources from the world’s leading climate organizations and actionable steps people can take in their everyday lives to combat climate change. The Center will feature facts, figures and data from the Intergovernmental Panel on Climate Change (IPCC) and their global network of climate science partners, including the UN Environment Programme (UNEP), The National Oceanic and Atmospheric Administration (NOAA), World Meteorological Organization (WMO), The Met Office and others. We will also include posts from relevant sources to highlight climate science news.
+The Center will launch in France, Germany, the UK and US to start and will roll out to other countries soon.
+
+Beyond our goal of reducing our operational greenhouse gas emissions by 75% this year, we will achieve net zero emissions for our operations. We are also setting an ambitious goal to reach net zero emissions for our value chain – including emissions from suppliers and other factors such as employee commuting and business travel – in 2030. We are committing to the Science Based Target Initiative, aligning our corporate climate goals with the latest science. Over the next decade, Facebook will work to reduce carbon emissions from our operations and value chain, including by working with suppliers on their own goals, helping the development of new carbon removal technologies and making our facilities as efficient as possible.
+
+We’re committed to tackling climate misinformation. We partner with more than 70 independent fact-checking organizations globally, covering more than 60 languages. These fact-checkers can and do rate climate science content. As with all types of claims debunked by our fact-checkers, we reduce the distribution of these posts in News Feed and apply a warning label on top of these posts both on Facebook and Instagram so people understand that the content has been rated false.
+Climate change is a crisis we will only be able to address if we all work together on a global scale. We are taking important steps to reduce our emissions and arm our global community with science-based information to make informed decisions and tools to take action. We hope these efforts demonstrate that Facebook is committed to playing its part and helping to inspire real action in our community.","```json
+{
+  ""actions"": [
+    {
+      ""id"": ""A1"",
+      ""summary"": ""Launch of the Climate Science Information Center on Facebook."",
+      ""reasons"": ""This action satisfies the criteria as it is clearly associated with digital well-being by providing users with accurate and science-based information on climate change (I1). It involves a well-defined update with the creation of a new information center (I2). The launch is scheduled for the near future, starting in specific countries (I3).""
+    },
+    {
+      ""id"": ""A2"",
+      ""summary"": ""Implementation of measures to tackle climate misinformation on Facebook and Instagram."",
+      ""reasons"": ""This action satisfies the criteria as it addresses digital harm by reducing the spread of misinformation related to climate change (I1). It involves a clear policy update where posts rated false by fact-checkers have reduced distribution and receive warning labels (I2). This policy is already in place as part of Facebook's ongoing efforts (I3).""
+    }
+  ],
+  ""count"": 2
+}
+```","```json
+{
+  ""A1"": {
+    ""extractive"": ""Now, we are taking a similar approach to the climate crisis by launching a new Climate Science Information Center on Facebook to connect people to factual and up-to-date climate information. The Climate Science Information Center is a dedicated space on Facebook with factual resources from the world’s leading climate organizations and actionable steps people can take in their everyday lives to combat climate change."",
+    ""annotations"": {
+      ""explicit_harm"": ""Promotes user wellbeing by providing accurate and science-based information on climate change."",
+      ""entities"": ""Facebook, Intergovernmental Panel on Climate Change (IPCC), UN Environment Programme (UNEP), The National Oceanic and Atmospheric Administration (NOAA), World Meteorological Organization (WMO), The Met Office"",
+      ""motivation"": ""Modeled after the COVID-19 Information Center to provide expert advice and information during a global crisis."",
+      ""partnership"": ""Involves partnerships with leading climate organizations such as IPCC, UNEP, NOAA, WMO, and The Met Office."",
+      ""geographic_scope"": ""The Center will launch in France, Germany, the UK, and US to start and will roll out to other countries soon."",
+      ""automaticity"": ""The change is applied automatically as it is a new feature on Facebook."",
+      ""instruction"": ""The Center will feature facts, figures, and data from leading climate organizations and include posts from relevant sources to highlight climate science news.""
+    }
+  },
+  ""A2"": {
+    ""extractive"": ""We’re committed to tackling climate misinformation. We partner with more than 70 independent fact-checking organizations globally, covering more than 60 languages. These fact-checkers can and do rate climate science content. As with all types of claims debunked by our fact-checkers, we reduce the distribution of these posts in News Feed and apply a warning label on top of these posts both on Facebook and Instagram so people understand that the content has been rated false."",
+    ""annotations"": {
+      ""explicit_harm"": ""Addresses digital harm by reducing the spread of misinformation related to climate change."",
+      ""entities"": ""Facebook, Instagram"",
+      ""partnership"": ""Partnership with more than 70 independent fact-checking organizations globally."",
+      ""automaticity"": ""The change is applied automatically as posts rated false have reduced distribution and receive warning labels.""
+    }
+  }
+}
+```","```json
+{
+  ""classification"": {
+    ""A1"": {
+      ""explicit_harm"": [""external harm""],
+      ""motivation"": [""events""],
+      ""automaticity"": [""automatic""],
+      ""geographic_scope"": ""France, Germany, United Kingdom, United States"",
+      ""instruction"": [""provide description""],
+      ""partnership"": [""non-academic research institution""]
+    },
+    ""A2"": {
+      ""explicit_harm"": [""harmful content""],
+      ""automaticity"": [""automatic""],
+      ""partnership"": [""non-academic research institution""]
+    }
+  }
+}
+```",2,1.0,3.0
