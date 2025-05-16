@@ -132,8 +132,8 @@ def parse_json_string(response: str):
         print(res)
         return json.loads(res)
     
-    except json.JSONDecodeError:
-        print('Failed to decode JSON object.')
+    except Exception as e:
+        print(f'Failed to decode JSON object due to {e}')
         return None 
     
     
@@ -468,6 +468,100 @@ def safe_self_consistency(x, client, n):
     except Exception as e:
         print("Error processing row:", e)
         return pd.Series([None] * 2)
+    
+def map_str_task_to_label(json_str, key, mapping): 
+  parsed_dict = parse_json_string(json_str)
+  mapped_list = []
+  if parsed_dict: 
+    if key in parsed_dict: 
+      for item in parsed_dict[key]: 
+        mapped_list.append([mapping[sub_item] for sub_item in list(item.values())[0]])
+      return mapped_list  
+    else: 
+      return None
+  else: 
+    return None
+
+def combine_downstream_json_task(json_str_base: str, downstream_task: str, key: str, mapping: dict) -> Any: 
+  """Combine downstream LLM output with the initial base JSON output 
+
+  Args:
+      json_str_base (str): The serialized task of the base task. 
+      downstream_task (str): The serialized (i.e. JSON-formatted string) JSON output from a downstream content analysis task 
+      key (str): The key of the downstream task's dictionary.
+      mapping (_type_): The dictionary to map the categorization to machine coded categorization into numeric labels
+  
+  Returns: 
+      Returns a deserialized and modified dictionary. You can use json.dumps to overwrite the initial seralized JSON output. 
+  """
+  
+  base_dict = parse_json_string(json_str_base)
+  downstream_task_out = map_str_task_to_label(downstream_task, key, mapping)
+  
+  if base_dict and downstream_task_out: 
+    for i, item in enumerate(list(base_dict.values())[0]):
+          item[key] = downstream_task_out[i]
+          
+  else: 
+    return None
+    
+  return base_dict
+
+def jaccard_similarity(a, b):
+    a_set, b_set = set(a), set(b)
+    
+    if not a_set and not b_set:
+        
+        return 1.0  # edge case: both empty sets
+    
+    return len(a_set & b_set) / len(a_set | b_set)
+
+    
+
+def soft_matching(
+    output_list: List[Tuple[str, Union[int, set]]],
+    comparison_list: List[Tuple[str, Union[int, set]]],
+    threshold,
+    tokenizer = bert_tokenizer,
+    model = bert_model
+) -> float:
+    """
+    Computes soft matches of texts using cosine similarity, and evaluates category
+    similarity (Jaccard) for similar text pairs.
+
+    Args:
+        output_list: List of (text, category) tuples.
+        comparison_list: List of (text, category) tuples.
+        bert_tokenizer: Pretrained tokenizer.
+        bert_model: Pretrained BERT model.
+
+    Returns:
+        float: Mean Jaccard similarity for matched text pairs.
+    """
+
+    embedded_vector = [embed_reasoning(text, tokenizer, model) for text, _ in output_list]
+    comparison_vector = [embed_reasoning(text, tokenizer, model) for text, _ in comparison_list]
+
+    jaccard_scores = []
+    for i, emb1 in enumerate(embedded_vector):
+        for j, emb2 in enumerate(comparison_vector):
+            cos_sim = torch.nn.functional.cosine_similarity(emb1, emb2).item()
+            if cos_sim > threshold:
+                jac_sim = jaccard_similarity(output_list[i][1], comparison_list[j][1])
+                jaccard_scores.append(jac_sim)
+    print(
+        f"""Number of soft-matched sentences: {len(jaccard_scores)}
+            Jaccard scores: {jaccard_scores}
+        """
+        )
+    
+    return np.mean(jaccard_scores) if jaccard_scores else 0.0
+
+            
+            
+    
+    
+        
 
 ### DEPRECATED: 
 # def self_consistency(prompt, 
